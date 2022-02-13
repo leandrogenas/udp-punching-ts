@@ -102,7 +102,7 @@ udp_in.on('message', function(data, rinfo) {
       msg: 'Hello World, '+remoteName+'!' 
     });
   } else if (parsed.type == 'message') {
-    
+    send({address: rinfo.address, port: rinfo.port}, 'ping')
     console.log('> %s [from %s@%s:%s]', parsed.msg, parsed.from, rinfo.address, rinfo.port)
   } else if (parsed.type == 'ping') {
     const conn = {port: porta, ...client.connection}
