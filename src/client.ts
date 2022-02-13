@@ -62,6 +62,11 @@ udp_in.on("listening", function() {
 let porta;
 let punched = false;
 
+let pingPongs = {
+  rx: 0,
+  tx: 0
+};
+
 udp_in.on('message', function(data, rinfo) {
   let parsed: TransmittedData;
   try {
@@ -107,12 +112,16 @@ udp_in.on('message', function(data, rinfo) {
   } else if (parsed.type == 'ping') {
     const conn = {port: porta, ...client.connection}
     SendAfterDelay(conn, {type: 'pong', from: clientName, to: remoteName}, 500)
+    pingPongs.rx++;
     console.log('> pong');
+    console.log(`< ping, recebidos: ${pingPongs.rx}, enviados: ${pingPongs.tx}`);
   } else if (parsed.type == 'pong') {
     const conn = {port: porta, ...client.connection}
     SendAfterDelay(conn, {type: 'ping', from: clientName, to: remoteName}, 500)
-    console.log('< ping');
+    pingPongs.tx++;
+    console.log(`< ping, recebidos: ${pingPongs.rx}, enviados: ${pingPongs.tx}`);
   }
+
 });
 
 const SendAfterDelay = (conn, msg, t = 1000) => setTimeout(() => send(conn, msg), t);
