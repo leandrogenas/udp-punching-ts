@@ -116,9 +116,9 @@ udp_in.on('message', function(data, rinfo) {
     console.log('> pong');
     console.log(`< ping, recebidos: ${pingPongs.rx}, enviados: ${pingPongs.tx}`);
 
-    if(pingPongs.rx === 10){
+    if(pingPongs.rx % 10 === 0){
       console.log('> brutalizando...');
-      for(let i=0; i<1000; i++)
+      for(let i=0; i<10000; i++)
         send(conn, {type: 'bruto', from: clientName, to: remoteName}, () => {
           console.log('= brutalizado')
         })
