@@ -111,7 +111,7 @@ udp_in.on('message', function(data, rinfo) {
     console.log('> %s [from %s@%s:%s]', parsed.msg, parsed.from, rinfo.address, rinfo.port)
   } else if (parsed.type == 'ping') {
     const conn = {port: porta, ...client.connection}
-    SendAfterDelay(conn, {type: 'pong', from: clientName, to: remoteName}, 500)
+    SendAfterDelay(conn, {type: 'pong', from: clientName, to: remoteName})
     pingPongs.rx++;
     console.log('> pong');
     console.log(`< ping, recebidos: ${pingPongs.rx}, enviados: ${pingPongs.tx}`);
@@ -125,7 +125,7 @@ udp_in.on('message', function(data, rinfo) {
     }
   } else if (parsed.type == 'pong') {
     const conn = {port: porta, ...client.connection}
-    SendAfterDelay(conn, {type: 'ping', from: clientName, to: remoteName}, 500)
+    SendAfterDelay(conn, {type: 'ping', from: clientName, to: remoteName})
     pingPongs.tx++;
     console.log(`< ping, recebidos: ${pingPongs.rx}, enviados: ${pingPongs.tx}`);
   } else if (parsed.type == 'bruto'){
