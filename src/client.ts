@@ -46,12 +46,12 @@ var send = function(connection, msg, cb = undefined) {
 }
 
 udp_in.on("listening", function() {
-  let linfo = { port: udp_in.address().port } as net.AddressInfo;
+  let lInfo = { port: udp_in.address().port } as net.AddressInfo;
   getNetworkIP(function(error, ip) {
     if (error) return console.log("! Unable to obtain connection information!");
-    linfo.address = ip;
-    console.log('# listening as %s@%s:%s', clientName, linfo.address, linfo.port);
-    send(rendezvous, { type: 'register', name: clientName, linfo: linfo }, function() {
+    lInfo.address = ip;
+    console.log('# listening as %s@%s:%s', clientName, lInfo.address, lInfo.port);
+    send(rendezvous, { type: 'register', name: clientName, lInfo: lInfo }, function() {
       if (remoteName) {
         send(rendezvous, { type: 'connect', from: clientName, to: remoteName });
       }
