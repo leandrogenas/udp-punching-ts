@@ -12,6 +12,9 @@ from client to client, in both directions (current state).
 Future goals include the development of a library that offers this method in a
 more extensible manner.
 
+Theory
+-------------------------
+
 Usage
 -------------------------
 A public machine acts as a rendezvous server (running rendezvous.js), two
