@@ -6,7 +6,12 @@
   "author": "Leandro Fabri Pereira <eu@leand.pro>",
   "scripts": {
     "clean": "rimraf dist",
-    "prebuild": "yarn clean"
+    "prebuild": "yarn clean",
+    "dev": "yarn clean && yarn watch",
+    "build": "tsc",
+    "watch": "tsc --watch --preserveWatchOutput",
+    "start:client": "node dist/client.js",
+    "start:server": "node dist/rendezvous.js"
   },
   "devDependencies": {
     "@types/node": "^17.0.17",
@@ -16,6 +21,6 @@
     "typescript": "^4.5.5"
   },
   "dependencies": {
-    
+
   }
 }

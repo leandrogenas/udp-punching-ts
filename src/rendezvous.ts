@@ -1,33 +1,35 @@
-var dgram = require('dgram');
+import * as dgram from 'dgram'
+import { TransmittedData, ServerInfo } from '.';
 
 var udp_matchmaker = dgram.createSocket('udp4');
 var udp_port = 6312;
 
-var clients = {};
+var clients = {} as ServerInfo[];
 
 udp_matchmaker.on('listening', function() {
-  var address = udp_matchmaker.address();
-  console.log('# listening [%s:%s]', address.address, address.port);
+  const socketInfo = udp_matchmaker.address();
+  console.log('# listening [%s:%s]', socketInfo.address, socketInfo.port);
 });
 
 udp_matchmaker.on('message', function(data, rinfo) {
+  let parsed: TransmittedData;
   try {
-    data = JSON.parse(data);
+    parsed = JSON.parse(data.toString());
   } catch (e) {
     return console.log('! Couldn\'t parse data (%s):\n%s', e, data);
   }
-  if (data.type == 'register') {
-    clients[data.name] = {
-        name: data.name,
+  if (parsed.type == 'register') {
+    clients[parsed.name] = {
+        name: parsed.name,
         connections: {
-          local: data.linfo, 
+          local: parsed.lInfo, 
           public: rinfo
         }
     };
-    console.log('# Client registered: %s@[%s:%s | %s:%s]', data.name,
-                rinfo.address, rinfo.port, data.linfo.address, data.linfo.port);
-  } else if (data.type == 'connect') {
-    var couple = [ clients[data.from], clients[data.to] ] 
+    console.log('# Client registered: %s@[%s:%s | %s:%s]', parsed.name,
+                rinfo.address, rinfo.port, parsed.lInfo.address, parsed.lInfo.port);
+  } else if (parsed.type == 'connect') {
+    var couple = [ clients[parsed.from], clients[parsed.to] ] 
     for (var i=0; i<couple.length; i++) {
       if (!couple[i]) return console.log('Client unknown!');
     }
@@ -41,8 +43,8 @@ udp_matchmaker.on('message', function(data, rinfo) {
   }
 });
 
-var send = function(host, port, msg, cb) {
-  var data = new Buffer(JSON.stringify(msg));
+var send = function(host, port, msg, cb = undefined) {
+  var data = Buffer.from(JSON.stringify(msg));
   udp_matchmaker.send(data, 0, data.length, port, host, function(err, bytes) {
     if (err) {
       udp_matchmaker.close();
