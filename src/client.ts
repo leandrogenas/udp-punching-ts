@@ -59,6 +59,9 @@ udp_in.on("listening", function() {
   });
 });
 
+let porta;
+let punched = false;
+
 udp_in.on('message', function(data, rinfo) {
   let parsed: TransmittedData;
   try {
@@ -72,18 +75,26 @@ udp_in.on('message', function(data, rinfo) {
     parsed.client.connections.local.address, parsed.client.connections.local.port, parsed.client.connections.public.address, parsed.client.connections.public.port);
     remoteName = parsed.client.name;
     var punch = { type: 'punch', from: clientName, to: remoteName };
-    for (var con in parsed.client.connections) {
+    
+    //for (var con in parsed.client.connections) {
       doUntilAck(1000, function() {
-        send(parsed.client.connections[con], punch);
+        if(punched)
+          parsed.client.connections.public.port = porta;
+        send(parsed.client.connections.public, punch);
       });
-    }
+    //}
   } else if (parsed.type == 'punch' && parsed.to == clientName) {
     var ack = { type: 'ack', from: clientName };  
     console.log("# got punch, sending ACK");
+    porta = rinfo.port
+    punched = true;
+    console.log(porta)
     send(rinfo, ack);
   } else if (parsed.type == 'ack' && !client.ack) {
     client.ack = true;
     client.connection = rinfo;
+    
+    
     console.log("# got ACK, sending MSG");
     send(client.connection, {
       type: 'message',
@@ -91,6 +102,7 @@ udp_in.on('message', function(data, rinfo) {
       msg: 'Hello World, '+remoteName+'!' 
     });
   } else if (parsed.type == 'message') {
+    console.log
     console.log('> %s [from %s@%s:%s]', parsed.msg, parsed.from, rinfo.address, rinfo.port)
   } 
 });
