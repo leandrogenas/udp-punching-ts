@@ -102,11 +102,20 @@ udp_in.on('message', function(data, rinfo) {
       msg: 'Hello World, '+remoteName+'!' 
     });
   } else if (parsed.type == 'message') {
-    console.log
+    
     console.log('> %s [from %s@%s:%s]', parsed.msg, parsed.from, rinfo.address, rinfo.port)
-  } 
+  } else if (parsed.type == 'ping') {
+    const conn = {port: porta, ...client.connection}
+    SendAfterDelay(conn, 'pong', 500)
+    console.log('> pong');
+  } else if (parsed.type == 'pong') {
+    const conn = {port: porta, ...client.connection}
+    SendAfterDelay(conn, 'ping', 500)
+    console.log('< ping');
+  }
 });
 
+const SendAfterDelay = (conn, msg, t = 1000) => setTimeout(() => send(conn, msg), t);
 
 var doUntilAck = function(interval, fn) {
   if (client.ack) return;

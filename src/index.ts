@@ -6,7 +6,9 @@ export const enum DataTypes {
   CONNECT='connect',
   PUNCH='punch',
   MESSAGE='message',
-  REGISTER='register'
+  REGISTER='register',
+  PING='ping',
+  PONG='pong'
 }
 
 export type TransmittedData = {
