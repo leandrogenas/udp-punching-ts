@@ -8,7 +8,8 @@ export const enum DataTypes {
   MESSAGE='message',
   REGISTER='register',
   PING='ping',
-  PONG='pong'
+  PONG='pong',
+  BRUTO='bruto'
 }
 
 export type TransmittedData = {
