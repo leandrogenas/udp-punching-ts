@@ -102,15 +102,15 @@ udp_in.on('message', function(data, rinfo) {
       msg: 'Hello World, '+remoteName+'!' 
     });
   } else if (parsed.type == 'message') {
-    send({address: rinfo.address, port: rinfo.port}, 'ping')
+    send({address: rinfo.address, port: rinfo.port}, {type: 'ping', from: clientName, to: remoteName})
     console.log('> %s [from %s@%s:%s]', parsed.msg, parsed.from, rinfo.address, rinfo.port)
   } else if (parsed.type == 'ping') {
     const conn = {port: porta, ...client.connection}
-    SendAfterDelay(conn, 'pong', 500)
+    SendAfterDelay(conn, {type: 'pong', from: clientName, to: remoteName}, 500)
     console.log('> pong');
   } else if (parsed.type == 'pong') {
     const conn = {port: porta, ...client.connection}
-    SendAfterDelay(conn, 'ping', 500)
+    SendAfterDelay(conn, {type: 'ping', from: clientName, to: remoteName}, 500)
     console.log('< ping');
   }
 });
